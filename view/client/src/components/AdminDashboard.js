@@ -10,7 +10,8 @@ function AdminDashboard() {
   const [success, setSuccess] = useState(null);
   const [formData, setFormData] = useState({
     StudentNumber: '', Password: '', FirstName: '', LastName: '',
-    Address: '', City: '', Email: '', PhoneNumber: '', Program: ''
+    Address: '', City: '', Email: '', PhoneNumber: '', Program: '',
+    CourseCode: '', CourseName: '', CourseSection: '', CourseSemester: ''
   });
   const [courseCode, setCourseCode] = useState('');
 
@@ -381,51 +382,51 @@ function AdminDashboard() {
       )}
 
       {selectedView === 'courseStudents' && (
-              <Card>
-                <Card.Header>Students in Course</Card.Header>
-                <Card.Body>
-                  <Form onSubmit={fetchCourseStudents}>
-                    <Form.Group className="mb-3">
-                      <Form.Label htmlFor="courseCodeFilter">Course Code</Form.Label>
-                      <Form.Control
-                        id="courseCodeFilter"
-                        type="text"
-                        placeholder="Enter course code"
-                        value={courseCode}
-                        onChange={(e) => setCourseCode(e.target.value)}
-                        required
-                        aria-required="true"
-                      />
-                      <Button variant="primary" className="mt-2" type="submit">Search</Button>
-                    </Form.Group>
-                  </Form>
-                  {loading ? <Spinner animation="border" /> : (
-                    <Table striped bordered hover responsive aria-label="Students in course table">
-                      <thead>
-                        <tr>
-                          <th>Student Number</th>
-                          <th>First Name</th>
-                          <th>Last Name</th>
-                          <th>Email</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {students.length === 0 ? (
-                          <tr><td colSpan="4" className="text-center">No students found</td></tr>
-                        ) : (
-                          students.map((student) => (
-                            <tr key={student._id}>
-                              <td>{student.StudentNumber}</td>
-                              <td>{student.FirstName}</td>
-                              <td>{student.LastName}</td>
-                              <td>{student.Email}</td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </Table>
+        <Card>
+          <Card.Header>Students in Course</Card.Header>
+          <Card.Body>
+            <Form onSubmit={fetchCourseStudents}>
+              <Form.Group className="mb-3">
+                <Form.Label htmlFor="courseCodeFilter">Course Code</Form.Label>
+                <Form.Control
+                  id="courseCodeFilter"
+                  type="text"
+                  placeholder="Enter course code"
+                  value={courseCode}
+                  onChange={(e) => setCourseCode(e.target.value)}
+                  required
+                  aria-required="true"
+                />
+                <Button variant="primary" className="mt-2" type="submit">Search</Button>
+              </Form.Group>
+            </Form>
+            {loading ? <Spinner animation="border" /> : (
+              <Table striped bordered hover responsive aria-label="Students in course table">
+                <thead>
+                  <tr>
+                    <th>Student Number</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.length === 0 ? (
+                    <tr><td colSpan="4" className="text-center">No students found</td></tr>
+                  ) : (
+                    students.map((student) => (
+                      <tr key={student._id}>
+                        <td>{student.StudentNumber}</td>
+                        <td>{student.FirstName}</td>
+                        <td>{student.LastName}</td>
+                        <td>{student.Email}</td>
+                      </tr>
+                    ))
                   )}
-                </Card.Body>
+                </tbody>
+              </Table>
+            )}
+          </Card.Body>
         </Card>
       )}
     </div>

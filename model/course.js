@@ -42,6 +42,9 @@ courseSchema.statics.getAllCourses = async function() {
 //update course by name
 courseSchema.statics.updateCourseByName = async function(courseName, updatedData) {
     const course = await this.findOne({ CourseName: courseName });
+    if(!course){
+        throw new Error(`Course with name ${courseName} not found`);
+    }
     Object.assign(course, updatedData);
     await course.save();
     return { message: `Course with name ${courseName} updated successfully` };

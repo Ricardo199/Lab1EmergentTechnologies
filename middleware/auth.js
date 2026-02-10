@@ -15,7 +15,7 @@ const authMiddleware = (req, res, next) => {
 };
 
 const adminMiddleware = (req, res, next) => {
-    if (req.user.Role === 'admin') {
+    if (req.user && req.user.Role === 'admin') {
         next();
     }else{
         res.status(403).json({ message: 'Forbidden: Admins only' });

@@ -38,6 +38,8 @@ router.post("/login", async (req, res) => {
         res.json({ success: true, student });
     } catch (err) {
         res.status(500).json({ error: err.message });
+        console.error('Login error:', err);
+        console.error('Stack trace:', err.stack);
     }
 });
 
@@ -54,6 +56,8 @@ router.get("/courses", authMiddleware, async (req, res) => {
         res.json(courses);
     } catch (err) {
         res.status(500).json({ error: err.message });
+        console.error('Error fetching courses:', err);
+        console.error('Stack trace:', err.stack);
     }
 });
 
@@ -64,7 +68,9 @@ router.post("/courses", authMiddleware, async (req, res) => {
         res.status(201).json(course);
     } catch (err) {
         res.status(500).json({ error: err.message });
-    }   
+        console.error('Error creating course:', err);
+        console.error('Stack trace:', err.stack);
+    }
 });
 
 //update course by name (protected)
@@ -73,6 +79,8 @@ router.put("/courses/:name", authMiddleware, async (req, res) => {
         res.status(200).json(await Course.updateCourseByName(req.params.name, req.body));
     } catch (err) {
         res.status(500).json({ error: err.message });
+        console.error('Error updating course:', err);
+        console.error('Stack trace:', err.stack);
     }
 });
 
@@ -82,6 +90,8 @@ router.delete("/courses/:name", authMiddleware, adminMiddleware, async (req, res
         res.status(200).json(await Course.deleteCourseByName(req.params.name));
     } catch (err) {
         res.status(500).json({ error: err.message });
+        console.error('Error deleting course:', err);
+        console.error('Stack trace:', err.stack);
     }
 });
 
@@ -92,6 +102,8 @@ router.get("/students", authMiddleware, adminMiddleware, async (req, res) => {
         res.json(students);
     } catch (err) {
         res.status(500).json({ error: err.message });
+        console.error('Error fetching students:', err);
+        console.error('Stack trace:', err.stack);
     }
 });
 
@@ -101,6 +113,8 @@ router.get("/students/:studentNumber", authMiddleware, async (req, res) => {
         res.status(200).json(await Student.findByStudentNumber(req.params.studentNumber));
     } catch (err) {
         res.status(500).json({ error: err.message });
+        console.error('Error fetching student:', err);
+        console.error('Stack trace:', err.stack);
     }
 });
 
@@ -110,6 +124,8 @@ router.get("/students/:firstName/:lastName", authMiddleware, async (req, res) =>
         res.status(200).json(await Student.findByName(req.params.firstName, req.params.lastName));
     } catch (err) {
         res.status(500).json({ error: err.message });
+        console.error('Error fetching student:', err);
+        console.error('Stack trace:', err.stack);
     }
 });
 
@@ -119,6 +135,8 @@ router.post("/students", async (req, res) => {
         res.status(201).json(await Student.createStudent(req.body));
     } catch (err) {
         res.status(500).json({ error: err.message });
+        console.error('Error creating student:', err);
+        console.error('Stack trace:', err.stack);
     }
 });
 
@@ -128,6 +146,8 @@ router.put("/students/:studentNumber", authMiddleware, async (req, res) => {
         res.status(200).json(await Student.updateStudentByStudentNumber(req.params.studentNumber, req.body));
     } catch (err) {
         res.status(500).json({ error: err.message });
+        console.error('Error updating student:', err);
+        console.error('Stack trace:', err.stack);
     }
 });
 

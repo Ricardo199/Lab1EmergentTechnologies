@@ -4,11 +4,11 @@ const crypto = require('crypto');
 const studentSchema = new mongoose.Schema({
     StudentNumber:{
         type: String,
-        unique: true
+        unique: true,
+        required: true
     },
     Password:{
         type: String,
-        unique: true,
         required: true
     },
     FirstName:{
@@ -103,11 +103,13 @@ studentSchema.methods.updateInfo = async function(info) {
 
 //update student information by student number
 studentSchema.statics.updateStudentByStudentNumber = async function(studentNumber, updateData) {
-    return await this.findOneAndUpdate(
-        { StudentNumber: studentNumber }, 
-        updateData, 
-        { new: true }
-    );
+    const student = await this.findOne({ StudentNumber: studentNumber });
+    if (!student) {
+        throw new Error(`Student with number ${studentNumber} not found`);
+    }
+    Object.assign(student, updateData);
+    await student.save();
+    return student;
 };
 
 //delete student by id

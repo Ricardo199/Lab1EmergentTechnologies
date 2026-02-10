@@ -67,6 +67,12 @@ studentSchema.pre('save', function(next) {
     next();
 });
 
+//compare password method
+studentSchema.methods.comparePassword = function(candidatePassword) {
+    const hashedCandidate = crypto.createHash('sha256').update(candidatePassword).digest('hex');
+    return this.Password === hashedCandidate;
+};
+
 //create new student
 studentSchema.statics.createStudent = async function(studentData) {
     const student = new this(studentData);

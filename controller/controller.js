@@ -15,7 +15,7 @@ router.post("/login", async (req, res) => {
         const { StudentNumber, Password } = req.body;
         const student = await Student.findOne({ StudentNumber });
 
-        if (!student || student.Password !== Password) {
+        if (!student || !student.comparePassword(Password)) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
@@ -131,4 +131,5 @@ router.put("/students/:studentNumber", authMiddleware, async (req, res) => {
     }
 });
 
+//export router
 module.exports = router;

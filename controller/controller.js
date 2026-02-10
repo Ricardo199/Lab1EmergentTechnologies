@@ -114,7 +114,7 @@ router.get("/students/:firstName/:lastName", authMiddleware, async (req, res) =>
 });
 
 //create new student (protected)
-router.post("/students", authMiddleware, adminMiddleware, async (req, res) => {
+router.post("/students", async (req, res) => {
     try {
         res.status(201).json(await Student.createStudent(req.body));
     } catch (err) {

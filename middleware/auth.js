@@ -23,5 +23,3 @@ const adminMiddleware = (req, res, next) => {
 };
 
 module.exports = { authMiddleware, adminMiddleware };
-
-module.exports = authMiddleware;

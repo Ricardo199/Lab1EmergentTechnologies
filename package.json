@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "client": "npm start --prefix client",
+    "client": "npm start --prefix view/client",
     "dev-all": "concurrently \"npm run dev\" \"npm run client\""
   },
   "dependencies": {

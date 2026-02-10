@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Row, Col, Form, Button, Table, Alert, Spinner } from 'react-bootstrap';
 
 function StudentDashboard() {
@@ -10,13 +10,7 @@ function StudentDashboard() {
   const [success, setSuccess] = useState(null);
   const [formData, setFormData] = useState({ CourseCode: '', CourseSection: '' });
 
-  useEffect(() => {
-    if (studentId && selectedView === 'myCourses') {
-      fetchStudentCourses();
-    }
-  }, [studentId, selectedView]);
-
-  const fetchStudentCourses = async () => {
+  const fetchStudentCourses = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`http://localhost:5000/api/students/${studentId}`, {
@@ -29,7 +23,13 @@ function StudentDashboard() {
       setError(err.message);
     }
     setLoading(false);
-  };
+  }, [studentId]);
+
+  useEffect(() => {
+    if (studentId && selectedView === 'myCourses') {
+      fetchStudentCourses();
+    }
+  }, [studentId, selectedView, fetchStudentCourses]);
 
   const handleAddCourse = async (e) => {
     e.preventDefault();

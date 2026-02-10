@@ -8,6 +8,13 @@ import './App.css';
 function App() {
   const [view, setView] = React.useState('student');
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [user, setUser] = React.useState(null);
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+    setIsLoggedIn(true);
+    setView(userData.Role === 'admin' ? 'admin' : 'student');
+  };
 
   const handleLogout = async () => {
     try {

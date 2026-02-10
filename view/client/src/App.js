@@ -27,6 +27,7 @@ function App() {
     } catch (err) {
       console.error('Logout error:', err);
       setIsLoggedIn(false);
+      setUser(null);
     }
   };
 

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const authMiddleware = require('../middleware/auth');
+const adminMiddleware = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 const Course = require('../model/course');
@@ -77,7 +78,7 @@ router.put("/courses/:name", authMiddleware, async (req, res) => {
 });
 
 //delete course by name (protected)
-router.delete("/courses/:name", authMiddleware, async (req, res) => {
+router.delete("/courses/:name", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         res.status(200).json(await Course.deleteCourseByName(req.params.name));
     } catch (err) {
@@ -86,7 +87,7 @@ router.delete("/courses/:name", authMiddleware, async (req, res) => {
 });
 
 //get all students (protected)
-router.get("/students", authMiddleware, async (req, res) => {
+router.get("/students", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const students = await Student.find({});
         res.json(students);
@@ -114,7 +115,7 @@ router.get("/students/:firstName/:lastName", authMiddleware, async (req, res) =>
 });
 
 //create new student (protected)
-router.post("/students", authMiddleware, async (req, res) => {
+router.post("/students", authMiddleware, adminMiddleware, async (req, res) => {
     try {
         res.status(201).json(await Student.createStudent(req.body));
     } catch (err) {

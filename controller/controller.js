@@ -4,18 +4,19 @@ const express = require('express');
 const router = express.Router();
 const Course = require('../model/course');
 const Student = require('../model/student');
-
-router.get("/", (req, res) => {
-    res.send("Welcome to the Student Portal API");
+const rateLimit = require('express-rate-limit');
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // limit each IP to 5 login requests per windowMs
+    message: { message: 'Too many login attempts, please try again later.' }
 });
 
-//Login route
-router.post("/login", async (req, res) => {
+router.post("/login", loginLimiter, async (req, res) => {
     try {
         const { StudentNumber, Password } = req.body;
         const student = await Student.findOne({ StudentNumber });
 
-        if (!student || !student.comparePassword(Password)) {
+        if (!student || !(await student.comparePassword(Password))) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
@@ -31,16 +32,30 @@ router.post("/login", async (req, res) => {
         
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
             maxAge: 24 * 60 * 60 * 1000
         });
         
-        res.json({ success: true, student });
+        res.json({ 
+            success: true, 
+            student:{
+                _id: student._id,
+                StudentNumber: student.StudentNumber,
+                FirstName: student.FirstName,
+                LastName: student.LastName,
+                Role: student.Role
+            }
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
         console.error('Login error:', err);
         console.error('Stack trace:', err.stack);
     }
+});
+
+router.get("/", (req, res) => {
+    res.send("Welcome to the Student Portal API");
 });
 
 //Logout route

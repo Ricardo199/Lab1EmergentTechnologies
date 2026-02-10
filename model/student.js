@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 
 const studentSchema = new mongoose.Schema({
     StudentNumber:{
@@ -60,17 +60,16 @@ const studentSchema = new mongoose.Schema({
 });
 
 //hash password before saving
-studentSchema.pre('save', function(next) {
+studentSchema.pre('save', async function(next) {
     if (this.isModified('Password')) {
-        this.Password = crypto.createHash('sha256').update(this.Password).digest('hex');
+        this.Password = await bcrypt.hash(this.Password, 10);
     }
     next();
 });
 
 //compare password method
-studentSchema.methods.comparePassword = function(candidatePassword) {
-    const hashedCandidate = crypto.createHash('sha256').update(candidatePassword).digest('hex');
-    return this.Password === hashedCandidate;
+studentSchema.methods.comparePassword = async function(candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.Password);
 };
 
 //create new student

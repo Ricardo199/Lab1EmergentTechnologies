@@ -12,7 +12,9 @@ const loginLimiter = rateLimit({
     message: { message: 'Too many login attempts, please try again later.' }
 });
 
-router.post("/login", loginLimiter,
+router.post(
+    "/login",
+    loginLimiter,
     [
         body('StudentNumber').isString().trim().notEmpty(),
         body('Password').isString().notEmpty()
@@ -63,7 +65,7 @@ router.post("/login", loginLimiter,
             console.error('Stack trace:', err.stack);
         }
     }
-});
+);
 
 router.get("/", (req, res) => {
     res.send("Welcome to the Student Portal API");

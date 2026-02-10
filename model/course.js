@@ -42,11 +42,13 @@ courseSchema.statics.getAllCourses = async function() {
 //update course by name
 courseSchema.statics.updateCourseByName = async function(courseName, updatedData) {
     const course = await this.findOne({ CourseName: courseName });
+    return course;
 }
 
 //delete course by name
 courseSchema.statics.deleteCourseByName = async function(courseName) {
     await this.deleteOne({ CourseName: courseName });
+    return { message: `Course with name ${courseName} deleted successfully` };
 };
 
 const Course = mongoose.model('Course', courseSchema);

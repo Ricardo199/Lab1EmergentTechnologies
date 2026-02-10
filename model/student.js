@@ -69,6 +69,7 @@ studentSchema.statics.findByStudentNumber = async function(studentNumber) {
 //find student by name
 studentSchema.statics.findByName = async function(firstName, lastName) {
     return await this.findOne({ FirstName: firstName, LastName: lastName });
+    return student;
 }
 
 //update student information
@@ -79,6 +80,7 @@ studentSchema.methods.updateInfo = async function(info) {
         }
     }
     await this.save();
+    return this;
 }
 
 //update student information by student number
@@ -93,6 +95,7 @@ studentSchema.statics.updateStudentByStudentNumber = async function(studentNumbe
 //delete student by id
 studentSchema.statics.deleteById = async function(id) {
     await this.findByIdAndDelete(id);
-}
+    return { message: `Student with id ${id} deleted successfully` };
+};
 
 module.exports = mongoose.model('Student', studentSchema);

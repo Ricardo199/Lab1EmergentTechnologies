@@ -30,7 +30,7 @@ function App() {
   };
 
   if (!isLoggedIn) {
-    return <Login onLogin={() => setIsLoggedIn(true)} />;
+    return <Login onLogin={handleLogin} />;
   }
 
   return (
@@ -39,8 +39,12 @@ function App() {
         <Container>
           <Navbar.Brand href="#home">Student Portal</Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link onClick={() => setView('student')} aria-label="Student view">Student</Nav.Link>
-            <Nav.Link onClick={() => setView('admin')} aria-label="Admin view">Admin</Nav.Link>
+            {(!user?.role || user.Role === 'student') && (
+              <Nav.Link onClick={() => setView('student')} aria-label="Student Dashboard">Student Dashboard</Nav.Link>
+            )}
+            {user?.Role === 'admin' && (
+              <Nav.Link onClick={() => setView('admin')} aria-label="Admin Dashboard">Admin Dashboard</Nav.Link>
+            )}
           </Nav>
           <Nav>
             <Nav.Link onClick={handleLogout} aria-label="Logout">Logout</Nav.Link>
@@ -49,7 +53,7 @@ function App() {
       </Navbar>
 
       <Container className="mt-4">
-        {view === 'student' && <StudentDashboard />}
+        {view === 'student' && <StudentDashboard studentId={user ? user.StudentId : ''} />}
         {view === 'admin' && <AdminDashboard />}
       </Container>
     </div>

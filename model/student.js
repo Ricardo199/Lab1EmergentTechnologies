@@ -81,6 +81,15 @@ studentSchema.methods.updateInfo = async function(info) {
     await this.save();
 }
 
+//update student information by student number
+studentSchema.statics.updateStudentByStudentNumber = async function(studentNumber, updateData) {
+    return await this.findOneAndUpdate(
+        { StudentNumber: studentNumber }, 
+        updateData, 
+        { new: true }
+    );
+};
+
 //delete student by id
 studentSchema.statics.deleteById = async function(id) {
     await this.findByIdAndDelete(id);

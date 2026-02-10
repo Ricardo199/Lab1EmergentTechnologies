@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 
 const studentSchema = new mongoose.Schema({
     StudentNumber:{
@@ -56,6 +57,14 @@ const studentSchema = new mongoose.Schema({
         type: String,
         default: 'student'
     }
+});
+
+//hash password before saving
+studentSchema.pre('save', function(next) {
+    if (this.isModified('Password')) {
+        this.Password = crypto.createHash('sha256').update(this.Password).digest('hex');
+    }
+    next();
 });
 
 //create new student

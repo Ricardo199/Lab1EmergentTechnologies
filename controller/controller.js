@@ -1,3 +1,4 @@
+const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const { adminMiddleware, authMiddleware }= require('../middleware/auth');
 const express = require('express');
@@ -11,46 +12,56 @@ const loginLimiter = rateLimit({
     message: { message: 'Too many login attempts, please try again later.' }
 });
 
-router.post("/login", loginLimiter, async (req, res) => {
-    try {
-        const { StudentNumber, Password } = req.body;
-        const student = await Student.findOne({ StudentNumber });
-
-        if (!student || !(await student.comparePassword(Password))) {
-            return res.status(401).json({ message: "Invalid credentials" });
+router.post("/login", loginLimiter,
+    [
+        body('StudentNumber').isString().trim().notEmpty(),
+        body('Password').isString().notEmpty()
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ message: 'Invalid input'});
         }
 
-        const token = jwt.sign(
-            { 
-                id: student._id, 
-                StudentNumber: student.StudentNumber,
-                Role: student.Role
-            }, 
-            process.env.JWT_SECRET, 
-            { expiresIn: '24h' }
-        );
-        
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 24 * 60 * 60 * 1000
-        });
-        
-        res.json({ 
-            success: true, 
-            student:{
-                _id: student._id,
-                StudentNumber: student.StudentNumber,
-                FirstName: student.FirstName,
-                LastName: student.LastName,
-                Role: student.Role
+        const { StudentNumber, Password } = req.body;
+
+        try {
+            const student = await Student.findOne({ StudentNumber });
+            if (!student || !(await student.comparePassword(Password))) {
+                return res.status(400).json({ message: 'Invalid credentials' });
             }
-        });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-        console.error('Login error:', err);
-        console.error('Stack trace:', err.stack);
+
+            const token = jwt.sign(
+                { 
+                    id: student._id,
+                    StudentNumber: student.StudentNumber, 
+                    Role: student.Role 
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: '24h' }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 24 * 60 * 60 * 1000
+            });
+            res.json({
+                success: true,
+                student: {
+                    _id: student._id,
+                    StudentNumber: student.StudentNumber,
+                    FirstName: student.FirstName,
+                    LastName: student.LastName,
+                    Role: student.Role
+                }
+            });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+            console.error('Login error:', err);
+            console.error('Stack trace:', err.stack);
+        }
     }
 });
 

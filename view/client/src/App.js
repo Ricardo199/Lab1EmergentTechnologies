@@ -9,6 +9,19 @@ function App() {
   const [view, setView] = React.useState('student');
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
+  const handleLogout = async () => {
+    try {
+      await fetch('http://localhost:5000/api/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      setIsLoggedIn(false);
+    } catch (err) {
+      console.error('Logout error:', err);
+      setIsLoggedIn(false);
+    }
+  };
+
   if (!isLoggedIn) {
     return <Login onLogin={() => setIsLoggedIn(true)} />;
   }
@@ -23,7 +36,7 @@ function App() {
             <Nav.Link onClick={() => setView('admin')} aria-label="Admin view">Admin</Nav.Link>
           </Nav>
           <Nav>
-            <Nav.Link onClick={() => setIsLoggedIn(false)} aria-label="Logout">Logout</Nav.Link>
+            <Nav.Link onClick={handleLogout} aria-label="Logout">Logout</Nav.Link>
           </Nav>
         </Container>
       </Navbar>

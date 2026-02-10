@@ -23,6 +23,7 @@ function App() {
         credentials: 'include'
       });
       setIsLoggedIn(false);
+      setUser(null);
     } catch (err) {
       console.error('Logout error:', err);
       setIsLoggedIn(false);

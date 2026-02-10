@@ -52,6 +52,9 @@ courseSchema.statics.updateCourseByName = async function(courseName, updatedData
 
 //delete course by name
 courseSchema.statics.deleteCourseByName = async function(courseName) {
+    if(!await this.findOne({ CourseName: courseName })) {
+        throw new Error(`Course with name ${courseName} not found`);
+    }
     await this.deleteOne({ CourseName: courseName });
     return { message: `Course with name ${courseName} deleted successfully` };
 };

@@ -67,6 +67,29 @@ function AdminDashboard() {
     }
   };
 
+  const handleCreateCourse = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:5000/api/courses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          CourseCode: formData.CourseCode,
+          CourseName: formData.CourseName,
+          CourseSection: formData.CourseSection,
+          CourseSemester: formData.CourseSemester
+        })
+      });
+      if (response.ok) {
+        setSuccess('Course created successfully!');
+        setFormData({ ...formData, CourseCode: '', CourseName: '', CourseSection: '', CourseSemester: '' });
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   const fetchCourseStudents = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -77,7 +100,7 @@ function AdminDashboard() {
       const allCourses = await response.json();
       const course = allCourses.find(c => c.CourseCode === courseCode);
       if (course && course.students) {
-        const studentPromises = course.students.map(id => 
+        const studentPromises = course.students.map(id =>
           fetch(`http://localhost:5000/api/students/${id}`, { credentials: 'include' }).then(r => r.json())
         );
         const studentsData = await Promise.all(studentPromises);
@@ -105,6 +128,7 @@ function AdminDashboard() {
           <Button variant="info" onClick={() => setSelectedView('allCourses')} className="me-2">All Courses</Button>
           <Button variant="success" onClick={() => setSelectedView('addStudent')} className="me-2">Add Student</Button>
           <Button variant="warning" onClick={() => setSelectedView('courseStudents')}>Course Students</Button>
+          <Button variant="secondary" onClick={() => setSelectedView('createCourse')} className="ms-2">Create Course</Button>
         </Col>
       </Row>
 
@@ -185,110 +209,110 @@ function AdminDashboard() {
             <Form onSubmit={handleAddStudent}>
               <Form.Group className="mb-3">
                 <Form.Label htmlFor="studentNumber">Student Number</Form.Label>
-                <Form.Control 
-                  id="studentNumber" 
-                  type="text" 
-                  placeholder="Enter student number" 
+                <Form.Control
+                  id="studentNumber"
+                  type="text"
+                  placeholder="Enter student number"
                   value={formData.StudentNumber}
-                  onChange={(e) => setFormData({...formData, StudentNumber: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, StudentNumber: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label htmlFor="password">Password</Form.Label>
-                <Form.Control 
-                  id="password" 
-                  type="password" 
-                  placeholder="Enter password" 
+                <Form.Control
+                  id="password"
+                  type="password"
+                  placeholder="Enter password"
                   value={formData.Password}
-                  onChange={(e) => setFormData({...formData, Password: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, Password: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label htmlFor="firstName">First Name</Form.Label>
-                <Form.Control 
-                  id="firstName" 
-                  type="text" 
-                  placeholder="Enter first name" 
+                <Form.Control
+                  id="firstName"
+                  type="text"
+                  placeholder="Enter first name"
                   value={formData.FirstName}
-                  onChange={(e) => setFormData({...formData, FirstName: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, FirstName: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label htmlFor="lastName">Last Name</Form.Label>
-                <Form.Control 
-                  id="lastName" 
-                  type="text" 
-                  placeholder="Enter last name" 
+                <Form.Control
+                  id="lastName"
+                  type="text"
+                  placeholder="Enter last name"
                   value={formData.LastName}
-                  onChange={(e) => setFormData({...formData, LastName: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, LastName: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label htmlFor="address">Address</Form.Label>
-                <Form.Control 
-                  id="address" 
-                  type="text" 
-                  placeholder="Enter address" 
+                <Form.Control
+                  id="address"
+                  type="text"
+                  placeholder="Enter address"
                   value={formData.Address}
-                  onChange={(e) => setFormData({...formData, Address: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, Address: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label htmlFor="city">City</Form.Label>
-                <Form.Control 
-                  id="city" 
-                  type="text" 
-                  placeholder="Enter city" 
+                <Form.Control
+                  id="city"
+                  type="text"
+                  placeholder="Enter city"
                   value={formData.City}
-                  onChange={(e) => setFormData({...formData, City: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, City: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label htmlFor="email">Email</Form.Label>
-                <Form.Control 
-                  id="email" 
-                  type="email" 
-                  placeholder="Enter email" 
+                <Form.Control
+                  id="email"
+                  type="email"
+                  placeholder="Enter email"
                   value={formData.Email}
-                  onChange={(e) => setFormData({...formData, Email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, Email: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label htmlFor="phoneNumber">Phone Number</Form.Label>
-                <Form.Control 
-                  id="phoneNumber" 
-                  type="text" 
-                  placeholder="Enter phone number" 
+                <Form.Control
+                  id="phoneNumber"
+                  type="text"
+                  placeholder="Enter phone number"
                   value={formData.PhoneNumber}
-                  onChange={(e) => setFormData({...formData, PhoneNumber: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, PhoneNumber: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label htmlFor="program">Program</Form.Label>
-                <Form.Control 
-                  id="program" 
-                  type="text" 
-                  placeholder="Enter program" 
+                <Form.Control
+                  id="program"
+                  type="text"
+                  placeholder="Enter program"
                   value={formData.Program}
-                  onChange={(e) => setFormData({...formData, Program: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, Program: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
               </Form.Group>
               <Button variant="success" type="submit">Add Student</Button>
@@ -297,52 +321,111 @@ function AdminDashboard() {
         </Card>
       )}
 
-      {selectedView === 'courseStudents' && (
+      {selectedView === 'createCourse' && (
         <Card>
-          <Card.Header>Students in Course</Card.Header>
+          <Card.Header>Create Course</Card.Header>
           <Card.Body>
-            <Form onSubmit={fetchCourseStudents}>
+            <Form onSubmit={handleCreateCourse}>
               <Form.Group className="mb-3">
-                <Form.Label htmlFor="courseCodeFilter">Course Code</Form.Label>
-                <Form.Control 
-                  id="courseCodeFilter" 
-                  type="text" 
-                  placeholder="Enter course code" 
-                  value={courseCode}
-                  onChange={(e) => setCourseCode(e.target.value)}
+                <Form.Label htmlFor="courseCode">Course Code</Form.Label>
+                <Form.Control
+                  id="courseCode"
+                  type="text"
+                  placeholder="e.g., COMP3123"
+                  value={formData.CourseCode}
+                  onChange={(e) => setFormData({ ...formData, CourseCode: e.target.value })}
                   required
-                  aria-required="true" 
+                  aria-required="true"
                 />
-                <Button variant="primary" className="mt-2" type="submit">Search</Button>
               </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label htmlFor="courseName">Course Name</Form.Label>
+                <Form.Control
+                  id="courseName"
+                  type="text"
+                  placeholder="e.g., Software Engineering"
+                  value={formData.CourseName}
+                  onChange={(e) => setFormData({ ...formData, CourseName: e.target.value })}
+                  required
+                  aria-required="true"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label htmlFor="courseSection">Section</Form.Label>
+                <Form.Control
+                  id="courseSection"
+                  type="text"
+                  placeholder="e.g., 001"
+                  value={formData.CourseSection}
+                  onChange={(e) => setFormData({ ...formData, CourseSection: e.target.value })}
+                  required
+                  aria-required="true"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label htmlFor="courseSemester">Semester</Form.Label>
+                <Form.Control
+                  id="courseSemester"
+                  type="text"
+                  placeholder="e.g., Fall 2024"
+                  value={formData.CourseSemester}
+                  onChange={(e) => setFormData({ ...formData, CourseSemester: e.target.value })}
+                  required
+                  aria-required="true"
+                />
+              </Form.Group>
+              <Button variant="success" type="submit">Create Course</Button>
             </Form>
-            {loading ? <Spinner animation="border" /> : (
-              <Table striped bordered hover responsive aria-label="Students in course table">
-                <thead>
-                  <tr>
-                    <th>Student Number</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {students.length === 0 ? (
-                    <tr><td colSpan="4" className="text-center">No students found</td></tr>
-                  ) : (
-                    students.map((student) => (
-                      <tr key={student._id}>
-                        <td>{student.StudentNumber}</td>
-                        <td>{student.FirstName}</td>
-                        <td>{student.LastName}</td>
-                        <td>{student.Email}</td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </Table>
-            )}
           </Card.Body>
+        </Card>
+      )}
+
+      {selectedView === 'courseStudents' && (
+              <Card>
+                <Card.Header>Students in Course</Card.Header>
+                <Card.Body>
+                  <Form onSubmit={fetchCourseStudents}>
+                    <Form.Group className="mb-3">
+                      <Form.Label htmlFor="courseCodeFilter">Course Code</Form.Label>
+                      <Form.Control
+                        id="courseCodeFilter"
+                        type="text"
+                        placeholder="Enter course code"
+                        value={courseCode}
+                        onChange={(e) => setCourseCode(e.target.value)}
+                        required
+                        aria-required="true"
+                      />
+                      <Button variant="primary" className="mt-2" type="submit">Search</Button>
+                    </Form.Group>
+                  </Form>
+                  {loading ? <Spinner animation="border" /> : (
+                    <Table striped bordered hover responsive aria-label="Students in course table">
+                      <thead>
+                        <tr>
+                          <th>Student Number</th>
+                          <th>First Name</th>
+                          <th>Last Name</th>
+                          <th>Email</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {students.length === 0 ? (
+                          <tr><td colSpan="4" className="text-center">No students found</td></tr>
+                        ) : (
+                          students.map((student) => (
+                            <tr key={student._id}>
+                              <td>{student.StudentNumber}</td>
+                              <td>{student.FirstName}</td>
+                              <td>{student.LastName}</td>
+                              <td>{student.Email}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </Table>
+                  )}
+                </Card.Body>
         </Card>
       )}
     </div>

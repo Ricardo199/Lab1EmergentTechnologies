@@ -52,27 +52,6 @@ function StudentDashboard() {
     }
   };
 
-  const handleUpdateCourse = async (e) => {
-    e.preventDefault();
-    try {
-      const updatedCourses = courses.map(c => 
-        c.CourseCode === formData.CourseCode ? { ...c, CourseSection: formData.CourseSection } : c
-      );
-      const response = await fetch(`http://localhost:5000/api/students/${studentId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ EnroledCourses: updatedCourses })
-      });
-      if (response.ok) {
-        setSuccess('Course updated successfully!');
-        fetchStudentCourses();
-      }
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
   const handleDropCourse = async (e) => {
     e.preventDefault();
     try {
@@ -99,29 +78,11 @@ function StudentDashboard() {
       
       {error && <Alert variant="danger" onClose={() => setError(null)} dismissible>{error}</Alert>}
       {success && <Alert variant="success" onClose={() => setSuccess(null)} dismissible>{success}</Alert>}
-      
-      <Card className="mb-4">
-        <Card.Body>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="studentId">Student ID</Form.Label>
-            <Form.Control 
-              id="studentId" 
-              type="text" 
-              placeholder="Enter your student ID"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              required
-              aria-required="true"
-            />
-          </Form.Group>
-        </Card.Body>
-      </Card>
 
       <Row className="mb-3">
         <Col>
           <Button variant="primary" onClick={() => setSelectedView('myCourses')} className="me-2">My Courses</Button>
           <Button variant="success" onClick={() => setSelectedView('addCourse')} className="me-2">Add Course</Button>
-          <Button variant="warning" onClick={() => setSelectedView('updateCourse')} className="me-2">Update Course</Button>
           <Button variant="danger" onClick={() => setSelectedView('dropCourse')}>Drop Course</Button>
         </Col>
       </Row>
@@ -188,41 +149,6 @@ function StudentDashboard() {
                 />
               </Form.Group>
               <Button variant="primary" type="submit">Add Course</Button>
-            </Form>
-          </Card.Body>
-        </Card>
-      )}
-
-      {selectedView === 'updateCourse' && (
-        <Card>
-          <Card.Header>Update Course</Card.Header>
-          <Card.Body>
-            <Form onSubmit={handleUpdateCourse}>
-              <Form.Group className="mb-3">
-                <Form.Label htmlFor="updateCourseCode">Course Code</Form.Label>
-                <Form.Control 
-                  id="updateCourseCode" 
-                  type="text" 
-                  placeholder="Enter course code" 
-                  value={formData.CourseCode}
-                  onChange={(e) => setFormData({...formData, CourseCode: e.target.value})}
-                  required
-                  aria-required="true" 
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label htmlFor="newSection">New Section</Form.Label>
-                <Form.Control 
-                  id="newSection" 
-                  type="text" 
-                  placeholder="Enter new section" 
-                  value={formData.CourseSection}
-                  onChange={(e) => setFormData({...formData, CourseSection: e.target.value})}
-                  required
-                  aria-required="true" 
-                />
-              </Form.Group>
-              <Button variant="warning" type="submit">Update Course</Button>
             </Form>
           </Card.Body>
         </Card>

@@ -19,7 +19,9 @@ function StudentDashboard() {
   const fetchStudentCourses = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/students/${studentId}`);
+      const response = await fetch(`http://localhost:5000/api/students/${studentId}`, {
+        credentials: 'include'
+      });
       const data = await response.json();
       setCourses(data.EnroledCourses || []);
       setError(null);
@@ -35,6 +37,7 @@ function StudentDashboard() {
       const response = await fetch(`http://localhost:5000/api/students/${studentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ 
           EnroledCourses: [...courses, formData]
         })
@@ -58,6 +61,7 @@ function StudentDashboard() {
       const response = await fetch(`http://localhost:5000/api/students/${studentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ EnroledCourses: updatedCourses })
       });
       if (response.ok) {
@@ -76,6 +80,7 @@ function StudentDashboard() {
       const response = await fetch(`http://localhost:5000/api/students/${studentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ EnroledCourses: updatedCourses })
       });
       if (response.ok) {
@@ -105,6 +110,7 @@ function StudentDashboard() {
               placeholder="Enter your student ID"
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
+              required
               aria-required="true"
             />
           </Form.Group>
@@ -165,6 +171,7 @@ function StudentDashboard() {
                   placeholder="e.g., COMP3123" 
                   value={formData.CourseCode}
                   onChange={(e) => setFormData({...formData, CourseCode: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -176,6 +183,7 @@ function StudentDashboard() {
                   placeholder="e.g., 001" 
                   value={formData.CourseSection}
                   onChange={(e) => setFormData({...formData, CourseSection: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -198,6 +206,7 @@ function StudentDashboard() {
                   placeholder="Enter course code" 
                   value={formData.CourseCode}
                   onChange={(e) => setFormData({...formData, CourseCode: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -209,6 +218,7 @@ function StudentDashboard() {
                   placeholder="Enter new section" 
                   value={formData.CourseSection}
                   onChange={(e) => setFormData({...formData, CourseSection: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -231,6 +241,7 @@ function StudentDashboard() {
                   placeholder="Enter course code to drop" 
                   value={formData.CourseCode}
                   onChange={(e) => setFormData({...formData, CourseCode: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>

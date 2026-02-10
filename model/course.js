@@ -42,7 +42,9 @@ courseSchema.statics.getAllCourses = async function() {
 //update course by name
 courseSchema.statics.updateCourseByName = async function(courseName, updatedData) {
     const course = await this.findOne({ CourseName: courseName });
-    return course;
+    Object.assign(course, updatedData);
+    await course.save();
+    return { message: `Course with name ${courseName} updated successfully` };
 }
 
 //delete course by name

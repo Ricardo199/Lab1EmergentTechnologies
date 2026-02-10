@@ -22,7 +22,9 @@ function AdminDashboard() {
   const fetchAllStudents = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/students');
+      const response = await fetch('http://localhost:5000/api/students', {
+        credentials: 'include'
+      });
       const data = await response.json();
       setStudents(data);
       setError(null);
@@ -35,7 +37,9 @@ function AdminDashboard() {
   const fetchAllCourses = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/courses');
+      const response = await fetch('http://localhost:5000/api/courses', {
+        credentials: 'include'
+      });
       const data = await response.json();
       setCourses(data);
       setError(null);
@@ -51,6 +55,7 @@ function AdminDashboard() {
       const response = await fetch('http://localhost:5000/api/students', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(formData)
       });
       if (response.ok) {
@@ -66,12 +71,14 @@ function AdminDashboard() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/courses');
+      const response = await fetch('http://localhost:5000/api/courses', {
+        credentials: 'include'
+      });
       const allCourses = await response.json();
       const course = allCourses.find(c => c.CourseCode === courseCode);
       if (course && course.students) {
         const studentPromises = course.students.map(id => 
-          fetch(`http://localhost:5000/api/students/${id}`).then(r => r.json())
+          fetch(`http://localhost:5000/api/students/${id}`, { credentials: 'include' }).then(r => r.json())
         );
         const studentsData = await Promise.all(studentPromises);
         setStudents(studentsData);
@@ -184,6 +191,7 @@ function AdminDashboard() {
                   placeholder="Enter student number" 
                   value={formData.StudentNumber}
                   onChange={(e) => setFormData({...formData, StudentNumber: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -195,6 +203,7 @@ function AdminDashboard() {
                   placeholder="Enter password" 
                   value={formData.Password}
                   onChange={(e) => setFormData({...formData, Password: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -206,6 +215,7 @@ function AdminDashboard() {
                   placeholder="Enter first name" 
                   value={formData.FirstName}
                   onChange={(e) => setFormData({...formData, FirstName: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -217,6 +227,7 @@ function AdminDashboard() {
                   placeholder="Enter last name" 
                   value={formData.LastName}
                   onChange={(e) => setFormData({...formData, LastName: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -228,6 +239,7 @@ function AdminDashboard() {
                   placeholder="Enter address" 
                   value={formData.Address}
                   onChange={(e) => setFormData({...formData, Address: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -239,6 +251,7 @@ function AdminDashboard() {
                   placeholder="Enter city" 
                   value={formData.City}
                   onChange={(e) => setFormData({...formData, City: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -250,6 +263,7 @@ function AdminDashboard() {
                   placeholder="Enter email" 
                   value={formData.Email}
                   onChange={(e) => setFormData({...formData, Email: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -261,6 +275,7 @@ function AdminDashboard() {
                   placeholder="Enter phone number" 
                   value={formData.PhoneNumber}
                   onChange={(e) => setFormData({...formData, PhoneNumber: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -272,6 +287,7 @@ function AdminDashboard() {
                   placeholder="Enter program" 
                   value={formData.Program}
                   onChange={(e) => setFormData({...formData, Program: e.target.value})}
+                  required
                   aria-required="true" 
                 />
               </Form.Group>
@@ -294,6 +310,7 @@ function AdminDashboard() {
                   placeholder="Enter course code" 
                   value={courseCode}
                   onChange={(e) => setCourseCode(e.target.value)}
+                  required
                   aria-required="true" 
                 />
                 <Button variant="primary" className="mt-2" type="submit">Search</Button>

@@ -69,7 +69,6 @@ studentSchema.statics.findByStudentNumber = async function(studentNumber) {
 //find student by name
 studentSchema.statics.findByName = async function(firstName, lastName) {
     return await this.findOne({ FirstName: firstName, LastName: lastName });
-    return student;
 }
 
 //update student information

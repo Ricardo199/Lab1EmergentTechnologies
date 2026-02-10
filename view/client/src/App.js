@@ -39,7 +39,7 @@ function App() {
         <Container>
           <Navbar.Brand href="#home">Student Portal</Navbar.Brand>
           <Nav className="me-auto">
-            {(!user?.role || user.Role === 'student') && (
+            {(!user?.Role || user.Role === 'student') && (
               <Nav.Link onClick={() => setView('student')} aria-label="Student Dashboard">Student Dashboard</Nav.Link>
             )}
             {user?.Role === 'admin' && (

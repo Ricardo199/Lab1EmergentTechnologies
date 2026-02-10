@@ -45,6 +45,16 @@ router.delete("/courses/:name", async (req, res) => {
     }
 });
 
+//get all students
+router.get("/students", async (req, res) => {
+    try{
+        const students = await Student.find({});
+        res.json(students);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 //get student by student number
 router.get("/students/:studentNumber", async (req, res) => {
     try{
@@ -76,16 +86,6 @@ router.post("/students", async (req, res) => {
 router.put("/students/:studentNumber", async (req, res) => {
     try {
         res.status(200).json(await Student.updateStudentByStudentNumber(req.params.studentNumber, req.body));
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-//get all students
-router.get("/students", async (req, res) => {
-    try{
-        const students = await Student.find({});
-        res.json(students);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+const authMiddleware = require('../middleware/auth');
 const express = require('express');
 const router = express.Router();
 const Course = require('../model/course');
@@ -7,8 +9,42 @@ router.get("/", (req, res) => {
     res.send("Welcome to the Student Portal API");
 });
 
-//get all courses
-router.get("/courses", async (req, res) => {
+//Login route
+router.post("/login", async (req, res) => {
+    try {
+        const { StudentNumber, Password } = req.body;
+        const student = await Student.findOne({ StudentNumber });
+
+        if (!student || student.Password !== Password) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        const token = jwt.sign(
+            { id: student._id, StudentNumber: student.StudentNumber }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '24h' }
+        );
+        
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            maxAge: 24 * 60 * 60 * 1000
+        });
+        
+        res.json({ success: true, student });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+//Logout route
+router.post("/logout", (req, res) => {
+    res.clearCookie('token');
+    res.json({ message: 'Logged out' });
+});
+
+//get all courses (protected)
+router.get("/courses", authMiddleware, async (req, res) => {
     try {
         const courses = await Course.getAllCourses();
         res.json(courses);
@@ -17,8 +53,8 @@ router.get("/courses", async (req, res) => {
     }
 });
 
-//create new course
-router.post("/courses", async (req, res) => {
+//create new course (protected)
+router.post("/courses", authMiddleware, async (req, res) => {
     try {
         const course = await Course.createCourse(req.body);
         res.status(201).json(course);
@@ -27,8 +63,8 @@ router.post("/courses", async (req, res) => {
     }   
 });
 
-//update course by name
-router.put("/courses/:name", async (req, res) => {
+//update course by name (protected)
+router.put("/courses/:name", authMiddleware, async (req, res) => {
     try {
         res.status(200).json(await Course.updateCourseByName(req.params.name, req.body));
     } catch (err) {
@@ -36,8 +72,8 @@ router.put("/courses/:name", async (req, res) => {
     }
 });
 
-//delete course by name
-router.delete("/courses/:name", async (req, res) => {
+//delete course by name (protected)
+router.delete("/courses/:name", authMiddleware, async (req, res) => {
     try {
         res.status(200).json(await Course.deleteCourseByName(req.params.name));
     } catch (err) {
@@ -45,9 +81,9 @@ router.delete("/courses/:name", async (req, res) => {
     }
 });
 
-//get all students
-router.get("/students", async (req, res) => {
-    try{
+//get all students (protected)
+router.get("/students", authMiddleware, async (req, res) => {
+    try {
         const students = await Student.find({});
         res.json(students);
     } catch (err) {
@@ -55,26 +91,26 @@ router.get("/students", async (req, res) => {
     }
 });
 
-//get student by student number
-router.get("/students/:studentNumber", async (req, res) => {
-    try{
+//get student by student number (protected)
+router.get("/students/:studentNumber", authMiddleware, async (req, res) => {
+    try {
         res.status(200).json(await Student.findByStudentNumber(req.params.studentNumber));
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-//get student by name
-router.get("/students/:firstName/:lastName", async (req, res) => {
-    try{
+//get student by name (protected)
+router.get("/students/:firstName/:lastName", authMiddleware, async (req, res) => {
+    try {
         res.status(200).json(await Student.findByName(req.params.firstName, req.params.lastName));
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-//create new student
-router.post("/students", async (req, res) => {
+//create new student (protected)
+router.post("/students", authMiddleware, async (req, res) => {
     try {
         res.status(201).json(await Student.createStudent(req.body));
     } catch (err) {
@@ -82,8 +118,8 @@ router.post("/students", async (req, res) => {
     }
 });
 
-//update student information
-router.put("/students/:studentNumber", async (req, res) => {
+//update student information (protected)
+router.put("/students/:studentNumber", authMiddleware, async (req, res) => {
     try {
         res.status(200).json(await Student.updateStudentByStudentNumber(req.params.studentNumber, req.body));
     } catch (err) {

@@ -51,15 +51,19 @@ const studentSchema = new mongoose.Schema({
             CourseName: String,
             CourseSection: String
         }
-    ]
+    ],
+    Role:{
+        type: String,
+        default: 'student'
+    }
 });
 
 //create new student
 studentSchema.statics.createStudent = async function(studentData) {
     const student = new this(studentData);
     await student.save();
-    return student;
-}
+    return { message: `Student with number ${student.StudentNumber} created successfully` };
+};
 
 //find student by student number
 studentSchema.statics.findByStudentNumber = async function(studentNumber) {
